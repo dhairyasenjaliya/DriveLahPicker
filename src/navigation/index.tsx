@@ -6,6 +6,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import MainScreen from '../container/mainScreen';
 import TripDateTimeSelectorScreen from '../container/tripDateTimeSelectorScreen';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 // Define End
 
@@ -18,18 +19,20 @@ class Navigator extends React.Component {
 
   render() {
     return (
-      <NavigationContainer>
-        <Stack.Navigator headerMode="none">
-          {/* Define All Screen As Component */}
-          <Stack.Screen name="mainScreen" component={MainScreen} />
-          <Stack.Screen
-            name="tripDateTimeSelectorScreen"
-            component={TripDateTimeSelectorScreen}
-          />
+      <SafeAreaView style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator headerMode="none">
+            {/* Define All Screen As Component */}
+            {/* <Stack.Screen name="mainScreen" component={MainScreen} /> */}
+            <Stack.Screen
+              name="tripDateTimeSelectorScreen"
+              component={TripDateTimeSelectorScreen}
+            />
 
-          {/* Define All Screen As Component End */}
-        </Stack.Navigator>
-      </NavigationContainer>
+            {/* Define All Screen As Component End */}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
     );
   }
 }

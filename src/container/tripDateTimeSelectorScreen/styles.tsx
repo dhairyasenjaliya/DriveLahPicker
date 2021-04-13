@@ -5,23 +5,15 @@ export default StyleSheet.create({
   container: {
     flex: 1,
   },
-  accessContactButton: {
-    height: verticalScale(50),
-    backgroundColor: Colors.accessButtonColor,
-    borderRadius: scale(50),
+  commonHeader: {
+    height: scale(45),
+    backgroundColor: '#F6F6F6',
     justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+    paddingLeft: scale(30),
   },
-  accessButtonText: {
-    fontSize: scale(14),
-    color: Colors.perlWhite,
-    fontFamily: Fonts.helveticaNeueMedium,
-    paddingHorizontal: scale(10),
-  },
-  buttonPos: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+  commonHeaderText: {
+    color: '#026786',
+    fontSize: scale(16),
+    fontWeight: 'bold',
   },
 });
