@@ -102,7 +102,7 @@ function TripDateTimeSelectorScreen({navigation}) {
   );
 
   const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>({
-    [moment().format('YYYY-MM-DD')]: {
+    [moment().add(1, 'day').format('YYYY-MM-DD')]: {
       customStyles: {
         container: {
           backgroundColor: Colors.primaryMellow,
@@ -116,7 +116,7 @@ function TripDateTimeSelectorScreen({navigation}) {
     },
   });
   const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
-    moment().format('YYYY-MM-DD'),
+    moment().add(1, 'day').format('YYYY-MM-DD'),
   );
 
   // End of Declared Local State Used
@@ -196,7 +196,22 @@ function TripDateTimeSelectorScreen({navigation}) {
           onDayPress={day => {
             if (index === 0) {
               setSelectedPickupDate(day.dateString);
+              setSelectedDropOffDate(day.dateString);
               setMarkedPickupDate({
+                [day.dateString]: {
+                  customStyles: {
+                    container: {
+                      backgroundColor: Colors.primaryMellow,
+                      borderRadius: 5,
+                    },
+                    text: {
+                      color: Colors.turquoiseSecondary,
+                      fontWeight: '700',
+                    },
+                  },
+                },
+              });
+              setMarkedDropOffDate({
                 [day.dateString]: {
                   customStyles: {
                     container: {
@@ -289,7 +304,6 @@ function TripDateTimeSelectorScreen({navigation}) {
                 : 19
             }
             onChange={data => {
-              // setDropOffTime
               setTimeout(() => {
                 if (index === 0) {
                   setpickUpTime(data);
