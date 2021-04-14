@@ -1,20 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Linking,
-  Alert,
-  Platform,
-  useWindowDimensions,
-  FlatList,
-  SectionList,
-} from 'react-native';
+import {View, Text, useWindowDimensions, TouchableOpacity} from 'react-native';
 import styles from './styles';
-import {CalendarList, Calendar} from 'react-native-calendars';
+import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
+import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
+import {scale} from 'react-native-size-matters';
 
 interface IProps {
   navigation: Object;
@@ -28,32 +20,33 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
+  const [pickUpTime, setpickUpTime] = React.useState(0);
 
   const allHour = [
-    '1AM',
-    '2AM',
-    '3AM',
-    '4AM',
-    '5AM',
-    '6AM',
-    '7AM',
-    '8AM',
-    '9AM',
-    '10AM',
-    '11AM',
-    '12AM',
-    '1PM',
-    '2PM',
-    '3PM',
-    '4PM',
-    '5PM',
-    '6PM',
-    '7PM',
-    '8PM',
-    '9PM',
-    '10PM',
-    '11PM',
-    '12PM',
+    '1 AM',
+    '2 AM',
+    '3 AM',
+    '4 AM',
+    '5 AM',
+    '6 AM',
+    '7 AM',
+    '8 AM',
+    '9 AM',
+    '10 AM',
+    '11 AM',
+    '12 AM',
+    '1 PM',
+    '2 PM',
+    '3 PM',
+    '4 PM',
+    '5 PM',
+    '6 PM',
+    '7 PM',
+    '8 PM',
+    '9 PM',
+    '10 PM',
+    '11 PM',
+    '12 PM',
   ];
 
   const [routes] = React.useState([
@@ -63,6 +56,26 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
 
   console.log('pickUpDate', pickUpDate);
   // (moment(momentObj).format('YYYY-MM-DD')).toString();
+
+  const rednerItem = (item, index) => {
+    // pickUpTime
+    return (
+      <View>
+        <View style={{width: 60, alignItems: 'center'}}>
+          <View
+            style={{
+              height: 30,
+              borderLeftWidth: 2,
+              alignSelf: 'center',
+              borderColor: '#026786',
+              zIndex: 100,
+            }}
+          />
+          <Text style={{color: '#026786', marginTop: 10}}>{item}</Text>
+        </View>
+      </View>
+    );
+  };
 
   const pickUpCalander = () => {
     return (
@@ -127,7 +140,7 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
         <View style={styles.commonHeader}>
           <Text style={styles.commonHeaderText}>Pickup Time</Text>
         </View>
-        <View style={{alignItems: 'center', paddingVertical: 30}}>
+        <View style={{alignItems: 'center', paddingTop: 10}}>
           <Text>21st Jan</Text>
           <View
             style={{
@@ -137,53 +150,73 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
               borderRadius: 5,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 20,
+              marginVertical: 10,
+              zIndex: 200,
             }}>
             <Text>8:00 AM</Text>
           </View>
 
-          <FlatList
+          <View style={{alignContent: 'center'}}>
+            <View
+              style={{
+                height: 20,
+                width: 20,
+                backgroundColor: '#fdd654',
+                position: 'absolute',
+                borderRadius: 50,
+                alignSelf: 'center',
+                top: scale(10),
+                // zIndex: 900,
+              }}
+            />
+            <View
+              style={{
+                borderWidth: 1,
+                position: 'absolute',
+                top: scale(-30),
+                // right: scale(24),
+                height: scale(40),
+                borderColor: '#026786',
+              }}
+            />
+          </View>
+
+          <HorizontalPicker
             data={allHour}
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    height: 15,
-                    borderLeftWidth: 2,
-                    // alignSelf: 'center',
-                    borderColor: '#026786',
-                  }}
-                />
-              );
-            }}
+            renderItem={rednerItem}
+            itemWidth={60}
+            style={{}}
             contentContainerStyle={{
               borderTopWidth: 2,
               marginTop: 20,
               borderColor: '#026786',
+              paddingHorizontal: scale(150),
             }}
-            horizontal
-            pagingEnabled
-            renderItem={data => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {}}
-                  style={{width: 50, alignItems: 'center'}}>
-                  <View
-                    style={{
-                      height: 30,
-                      borderLeftWidth: 2,
-                      alignSelf: 'center',
-                      borderColor: '#026786',
-                    }}
-                  />
-                  <Text style={{color: '#026786', marginTop: 10}}>
-                    {data.item}
-                  </Text>
-                </TouchableOpacity>
-              );
+            defaultIndex={pickUpTime}
+            onChange={data => {
+              console.log(data);
+              setTimeout(() => {
+                setpickUpTime(data);
+              }, 100);
             }}
           />
+          <View style={{marginTop: 20, alignItems: 'center'}}>
+            <Text>Slide to select hour</Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              // position: 'absolute',
+              // bottom: 0,
+              backgroundColor: '#00a4ad',
+              height: scale(40),
+              width: '90%',
+              borderRadius: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: scale(20),
+            }}>
+            <Text>Save & Continue</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -202,7 +235,7 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     navigationState: {routes: any[]};
     position: Animated.Adaptable<number>;
   }) => {
-    let whichTab = props.navigationState.index;
+    // let whichTab = props.navigationState.index;
     // const {theme} = this.props.appTheme;
     return (
       <View style={{opacity: 10, backgroundColor: 'red'}}>
