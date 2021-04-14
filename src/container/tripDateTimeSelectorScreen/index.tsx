@@ -77,22 +77,46 @@ function TripDateTimeSelectorScreen({navigation}) {
   // Declare All Local State Used
   const [index, changeTab] = React.useState(0);
   // Time Set
-  const [pickUpTime, setpickUpTime] = React.useState(0);
-  const [dropOffTime, setDropOffTime] = React.useState(0);
+  const [pickUpTime, setpickUpTime] = React.useState(19);
+  const [dropOffTime, setDropOffTime] = React.useState(21);
   // Date Set
   const [defaultSeletedDate] = useState<string | any>(
     moment().format('YYYY-MM-DD'),
   );
-  const [markedPickupDate, setMarkedPickupDate] = useState<Array<50> | any>({});
+  const [markedPickupDate, setMarkedPickupDate] = useState<Array<50> | any>({
+    [moment().format('YYYY-MM-DD')]: {
+      customStyles: {
+        container: {
+          backgroundColor: Colors.primaryMellow,
+          borderRadius: 5,
+        },
+        text: {
+          color: Colors.turquoiseSecondary,
+          fontWeight: '700',
+        },
+      },
+    },
+  });
   const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
-    '',
+    moment().format('YYYY-MM-DD'),
   );
 
-  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>(
-    {},
-  );
+  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>({
+    [moment().format('YYYY-MM-DD')]: {
+      customStyles: {
+        container: {
+          backgroundColor: Colors.primaryMellow,
+          borderRadius: 5,
+        },
+        text: {
+          color: Colors.turquoiseSecondary,
+          fontWeight: '700',
+        },
+      },
+    },
+  });
   const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
-    '',
+    moment().format('YYYY-MM-DD'),
   );
 
   // End of Declared Local State Used
@@ -217,8 +241,8 @@ function TripDateTimeSelectorScreen({navigation}) {
             textMonthFontSize: 18,
             textDayHeaderFontSize: 18,
             monthTextColor: Colors.turquoiseSecondary,
-            dayTextColor: Colors.turquoiseSecondary,
-            textDisabledColor: '#7fb2c1',
+            dayTextColor: Colors.primaryTeal,
+            textDisabledColor: Colors.disableDate,
           }}
         />
         <View style={styles.commonHeader}>
@@ -278,7 +302,11 @@ function TripDateTimeSelectorScreen({navigation}) {
           <View style={styles.slideTextContain}>
             <Text style={styles.slideText}>Slide to select hour</Text>
           </View>
-          <TouchableOpacity style={styles.customButton}>
+          <TouchableOpacity
+            onPress={() => {
+              index === 0 ? changeTab(1) : changeTab(0);
+            }}
+            style={styles.customButton}>
             <Text style={styles.buttonText}>{`Save & Continue`}</Text>
           </TouchableOpacity>
         </View>
@@ -298,9 +326,21 @@ function TripDateTimeSelectorScreen({navigation}) {
           style={styles.tabStyle}
           renderLabel={({route}) => {
             // focused, color
+            // console.log(route);
             return (
               <View>
-                <Text style={styles.tabTitle}>{'21 Jan, 8:00 PM'}</Text>
+                <Text style={styles.tabTitle}>
+                  {
+                    // '21 Jan, 8:00 PM
+                    route.title === 'Pickup'
+                      ? selectedPickupDate &&
+                        moment(selectedPickupDate).format('DD MMM') +
+                          `${pickUpTime ? ', ' + allHour[pickUpTime] : ''}`
+                      : selectedDropOffDate &&
+                        moment(selectedDropOffDate).format('DD MMM') +
+                          `${dropOffTime ? ', ' + allHour[dropOffTime] : ''}`
+                  }
+                </Text>
                 <Text style={styles.tabSubTitle}>
                   {route.title === 'Pickup'
                     ? 'Pickup Date & Time'

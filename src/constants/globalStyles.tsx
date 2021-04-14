@@ -6,6 +6,7 @@ export const Colors = {
   turquoisePrimary: '#0D6786',
   turquoiseSecondary: '#026786',
   primaryMellow: '#FECD2A',
+  disableDate: '#7fb2b0',
 };
 
 // Global Fonts
