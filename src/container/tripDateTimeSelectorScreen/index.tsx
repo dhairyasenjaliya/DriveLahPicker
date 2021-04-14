@@ -1,26 +1,42 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, useWindowDimensions, TouchableOpacity} from 'react-native';
-import styles from './styles';
+
+// Third Party Packages Declare
 import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import {scale} from 'react-native-size-matters';
+// End Third Party Packages Declare
 
+// Custom Packages Declare
+import styles from './styles';
+// End Custom Packages Declare
+
+// Global Level Props To Identify Data Coming From Previos Screen
 interface IProps {
   navigation: Object;
 }
-// Global Level Props To Identify Data Coming From Previos Screen
 
 const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
+  // Used For Tab Size
+  const layout = useWindowDimensions();
+
+  // Declare All Local State Used
   const [pickUpDate, setPickUpDate] = useState<Date>(
     moment().format('YYYY-MM-DD'),
   );
-  const layout = useWindowDimensions();
-
   const [index, setIndex] = React.useState(0);
   const [pickUpTime, setpickUpTime] = React.useState(0);
+  // End of Declared Local State Used
+
+  // Route Parameters
+  const [routes] = React.useState([
+    {key: 'pickUp', title: 'Pickup'},
+    {key: 'dropOff', title: 'Drop Off'},
+  ]);
+  // Route Parameters End
 
   const allHour = [
     '1 AM',
@@ -49,29 +65,12 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     '12 PM',
   ];
 
-  const [routes] = React.useState([
-    {key: 'pickUp', title: 'Pickup'},
-    {key: 'dropOff', title: 'Drop Off'},
-  ]);
-
-  console.log('pickUpDate', pickUpDate);
-  // (moment(momentObj).format('YYYY-MM-DD')).toString();
-
-  const rednerItem = (item, index) => {
-    // pickUpTime
+  const displayTimeSliderComponent = (item, index) => {
     return (
       <View>
-        <View style={{width: 60, alignItems: 'center'}}>
-          <View
-            style={{
-              height: 30,
-              borderLeftWidth: 2,
-              alignSelf: 'center',
-              borderColor: '#026786',
-              zIndex: 100,
-            }}
-          />
-          <Text style={{color: '#026786', marginTop: 10}}>{item}</Text>
+        <View style={styles.timeComponentMain}>
+          <View style={styles.timeSecondaryComp} />
+          <Text style={styles.hourText}>{item}</Text>
         </View>
       </View>
     );
@@ -79,11 +78,9 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
 
   const pickUpCalander = () => {
     return (
-      <View style={{backgroundColor: '#FFF'}}>
+      <View style={styles.pickUpCal}>
         <Calendar
-          // current={pickUpDate}
           onDayPress={day => {
-            // console.log('da', day);
             setPickUpDate(day.dateString);
           }}
           // markingType={'multi-dot'}
@@ -118,12 +115,10 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
             textMonthFontSize: 16,
             textDayHeaderFontSize: 16,
           }}
-          style={{
-            height: 370,
-          }}
+          style={styles.calenderHeight}
           markingType={'custom'}
           markedDates={{
-            '2021-04-15': {
+            '2021-04-16': {
               customStyles: {
                 container: {
                   backgroundColor: '#fdd654',
@@ -140,58 +135,23 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
         <View style={styles.commonHeader}>
           <Text style={styles.commonHeaderText}>Pickup Time</Text>
         </View>
-        <View style={{alignItems: 'center', paddingTop: 10}}>
+        <View style={styles.dateDisp}>
           <Text>21st Jan</Text>
-          <View
-            style={{
-              backgroundColor: '#fdd654',
-              height: 32,
-              width: 90,
-              borderRadius: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginVertical: 10,
-              zIndex: 200,
-            }}>
+          <View style={styles.timeDisp}>
             <Text>8:00 AM</Text>
           </View>
 
-          <View style={{alignContent: 'center'}}>
-            <View
-              style={{
-                height: 20,
-                width: 20,
-                backgroundColor: '#fdd654',
-                position: 'absolute',
-                borderRadius: 50,
-                alignSelf: 'center',
-                top: scale(10),
-                // zIndex: 900,
-              }}
-            />
-            <View
-              style={{
-                borderWidth: 1,
-                position: 'absolute',
-                top: scale(-30),
-                // right: scale(24),
-                height: scale(40),
-                borderColor: '#026786',
-              }}
-            />
+          <View style={styles.alignCenter}>
+            <View style={styles.yellowDot} />
+            <View style={styles.vertLine} />
           </View>
 
           <HorizontalPicker
             data={allHour}
-            renderItem={rednerItem}
-            itemWidth={60}
+            renderItem={displayTimeSliderComponent}
+            itemWidth={scale(50)}
             style={{}}
-            contentContainerStyle={{
-              borderTopWidth: 2,
-              marginTop: 20,
-              borderColor: '#026786',
-              paddingHorizontal: scale(150),
-            }}
+            contentContainerStyle={styles.horizontalPicker}
             defaultIndex={pickUpTime}
             onChange={data => {
               console.log(data);
@@ -200,21 +160,10 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
               }, 100);
             }}
           />
-          <View style={{marginTop: 20, alignItems: 'center'}}>
-            <Text>Slide to select hour</Text>
+          <View style={styles.slideTextContain}>
+            <Text style={styles.slideText}>Slide to select hour</Text>
           </View>
-          <TouchableOpacity
-            style={{
-              // position: 'absolute',
-              // bottom: 0,
-              backgroundColor: '#00a4ad',
-              height: scale(40),
-              width: '90%',
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: scale(20),
-            }}>
+          <TouchableOpacity style={styles.customButton}>
             <Text>Save & Continue</Text>
           </TouchableOpacity>
         </View>
@@ -235,33 +184,18 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     navigationState: {routes: any[]};
     position: Animated.Adaptable<number>;
   }) => {
-    // let whichTab = props.navigationState.index;
-    // const {theme} = this.props.appTheme;
     return (
-      <View style={{opacity: 10, backgroundColor: 'red'}}>
+      <View>
         <TabBar
           {...props}
-          indicatorStyle={{
-            backgroundColor: '#00a4ad',
-            height: 5,
-            borderRadius: 10,
-          }}
-          style={{
-            // height: scale(40),
-            backgroundColor: '#FFF',
-            // alignItems: 'flex-end',
-            // borderTopLeftRadius: scale(15),
-            // borderTopRightRadius: scale(15),
-          }}
-          renderLabel={({route, focused, color}) => {
+          indicatorStyle={styles.tabIndicatorStyle}
+          style={styles.tabStyle}
+          renderLabel={({route}) => {
+            // focused, color
             return (
               <View>
-                <Text
-                  style={{color: '#026786', fontWeight: '700', fontSize: 18}}>
-                  {'21 Jan, 8:00 PM'}
-                </Text>
-                <Text
-                  style={{color: '#408ca3', fontWeight: '500', fontSize: 12}}>
+                <Text style={styles.tabTitle}>{'21 Jan, 8:00 PM'}</Text>
+                <Text style={styles.tabSubTitle}>
                   {route.title === 'Pickup'
                     ? 'Pickup Date & Time'
                     : 'Drop-off Date & Time'}
@@ -275,12 +209,12 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
             {index === 0 ? 'Pickup Date' : 'Drop-off Date'}
           </Text>
         </View>
-        {/* <View style={{backgroundColor: 'red', flex: 1}} /> */}
       </View>
     );
   };
 
   return (
+    // InternalTab View
     <TabView
       navigationState={{index, routes}}
       renderScene={renderScene}
@@ -288,7 +222,7 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
       initialLayout={{width: layout.width}}
       swipeEnabled={false}
       renderTabBar={_renderTabBar}
-      style={{backgroundColor: '#FFF'}}
+      style={styles.tabStyle}
     />
   );
 };
