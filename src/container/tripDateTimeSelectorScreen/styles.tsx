@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {ifIphoneX} from 'react-native-iphone-x-helper';
 import {scale, verticalScale} from 'react-native-size-matters';
 import {Colors, Fonts} from '../../constants/globalStyles';
 export default StyleSheet.create({
@@ -38,7 +39,14 @@ export default StyleSheet.create({
     backgroundColor: '#FFF',
   },
   calenderHeight: {
-    height: scale(300),
+    ...ifIphoneX(
+      {
+        height: scale(300),
+      },
+      {
+        height: scale(330),
+      },
+    ),
   },
   dateDisp: {
     alignItems: 'center',
@@ -95,7 +103,7 @@ export default StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: scale(10),
+    marginTop: scale(20),
   },
   timeComponentMain: {
     width: scale(50),

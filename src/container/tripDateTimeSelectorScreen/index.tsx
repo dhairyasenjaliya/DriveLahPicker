@@ -1,5 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, useWindowDimensions, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useMemo} from 'react';
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 // Third Party Packages Declare
 import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -63,7 +69,7 @@ interface IProps {
   navigation: Object;
 }
 
-const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
+function TripDateTimeSelectorScreen({navigation}) {
   // Used For Tab Size
   const layout = useWindowDimensions();
 
@@ -87,6 +93,10 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
   );
 
   // End of Declared Local State Used
+
+  useEffect(() => {
+    return () => {};
+  }, [pickUpTime]);
 
   // Route Parameters
   const [routes] = React.useState([
@@ -135,7 +145,9 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
 
   const pickUpCalander = () => {
     return (
-      <View style={styles.pickUpCal}>
+      <ScrollView
+        contentContainerStyle={{paddingBottom: scale(50)}}
+        style={styles.pickUpCal}>
         <Calendar
           // onMonthChange={month => {
           //   // console.log('month changed', month);
@@ -200,7 +212,6 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
             contentContainerStyle={styles.horizontalPicker}
             defaultIndex={pickUpTime ? pickUpTime : 19}
             onChange={data => {
-              console.log(data);
               setTimeout(() => {
                 setpickUpTime(data);
               }, 100);
@@ -210,10 +221,10 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
             <Text style={styles.slideText}>Slide to select hour</Text>
           </View>
           <TouchableOpacity style={styles.customButton}>
-            <Text>Save & Continue</Text>
+            <Text>{`Save & Continue`}</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
@@ -263,9 +274,17 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     // InternalTab View
     <View style={styles.container}>
       <HeaderCoponent goBack={true} title={'Select your trip dates'} />
+      {/* {pickUpCalander()} */}
       <TabView
         navigationState={{index, routes}}
-        renderScene={renderScene}
+        renderScene={({route}) => {
+          switch (route.key) {
+            case 'pickUp':
+              return pickUpCalander();
+            case 'dropOff':
+              return pickUpCalander();
+          }
+        }}
         onIndexChange={changeTab}
         initialLayout={{width: layout.width}}
         swipeEnabled={false}
@@ -274,5 +293,5 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
       />
     </View>
   );
-};
+}
 export default TripDateTimeSelectorScreen;
