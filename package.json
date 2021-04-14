@@ -1,5 +1,5 @@
 {
-  "name": "columnDemo",
+  "name": "driveLah",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -26,6 +26,7 @@
     "react-native-permissions": "^3.0.1",
     "react-native-phone-call": "^1.0.9",
     "react-native-reanimated": "^2.0.0",
+    "react-native-rename": "^2.8.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^2.18.1",
     "react-native-size-matters": "^0.4.0",

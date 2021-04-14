@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "columnDemo.app"
-               BlueprintName = "columnDemo"
-               ReferencedContainer = "container:columnDemo.xcodeproj">
+               BuildableName = "driveLah.app"
+               BlueprintName = "driveLah"
+               ReferencedContainer = "container:driveLah.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "columnDemoTests.xctest"
-               BlueprintName = "columnDemoTests"
-               ReferencedContainer = "container:columnDemo.xcodeproj">
+               BuildableName = "driveLahTests.xctest"
+               BlueprintName = "driveLahTests"
+               ReferencedContainer = "container:driveLah.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "columnDemo.app"
-            BlueprintName = "columnDemo"
-            ReferencedContainer = "container:columnDemo.xcodeproj">
+            BuildableName = "driveLah.app"
+            BlueprintName = "driveLah"
+            ReferencedContainer = "container:driveLah.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "columnDemo.app"
-            BlueprintName = "columnDemo"
-            ReferencedContainer = "container:columnDemo.xcodeproj">
+            BuildableName = "driveLah.app"
+            BlueprintName = "driveLah"
+            ReferencedContainer = "container:driveLah.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
