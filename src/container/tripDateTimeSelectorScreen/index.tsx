@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import {Colors, Fonts} from '../../constants/globalStyles';
 
 // Third Party Packages Declare
 import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -146,7 +147,7 @@ function TripDateTimeSelectorScreen({navigation}) {
   const pickUpCalander = () => {
     return (
       <ScrollView
-        contentContainerStyle={{paddingBottom: scale(50)}}
+        contentContainerStyle={styles.scrollContent}
         style={styles.pickUpCal}>
         <Calendar
           // onMonthChange={month => {
@@ -158,12 +159,13 @@ function TripDateTimeSelectorScreen({navigation}) {
               [day.dateString]: {
                 customStyles: {
                   container: {
-                    backgroundColor: '#fdd654',
+                    backgroundColor: Colors.primaryMellow,
                     borderRadius: 5,
                   },
                   text: {
-                    color: '#026786',
-                    fontWeight: 'bold',
+                    color: Colors.turquoiseSecondary,
+                    fontWeight: '700',
+                    // fontFamily: Fonts.MuseoSansRounded3,
                   },
                 },
               },
@@ -179,24 +181,23 @@ function TripDateTimeSelectorScreen({navigation}) {
           showWeekNumbers={false}
           monthFormat={'MMMM'}
           theme={{
-            selectedDayBackgroundColor: '#FF5D4E',
-            arrowColor: '#026786',
-            textDayHeaderFontWeight: '300',
-            textDayFontSize: 16,
-            textMonthFontSize: 16,
-            textDayHeaderFontSize: 16,
-            monthTextColor: '#026786',
-            dayTextColor: '#026786',
+            arrowColor: Colors.turquoiseSecondary,
+            textDayFontSize: 18,
+            textMonthFontSize: 18,
+            textDayHeaderFontSize: 18,
+            monthTextColor: Colors.turquoiseSecondary,
+            dayTextColor: Colors.turquoiseSecondary,
             textDisabledColor: 'grey',
+            // textMonthFontFamily: Fonts.MuseoSansRounded5,
           }}
         />
         <View style={styles.commonHeader}>
           <Text style={styles.commonHeaderText}>Pickup Time</Text>
         </View>
         <View style={styles.dateDisp}>
-          <Text>21st Jan</Text>
+          <Text style={styles.dateDispText}>21st Jan</Text>
           <View style={styles.timeDisp}>
-            <Text>8:00 AM</Text>
+            <Text style={styles.timeDispText}>8:00 AM</Text>
           </View>
 
           <View style={styles.alignCenter}>
@@ -221,21 +222,12 @@ function TripDateTimeSelectorScreen({navigation}) {
             <Text style={styles.slideText}>Slide to select hour</Text>
           </View>
           <TouchableOpacity style={styles.customButton}>
-            <Text>{`Save & Continue`}</Text>
+            <Text style={styles.buttonText}>{`Save & Continue`}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     );
   };
-
-  const PickUpDateTime = () => pickUpCalander();
-
-  const DropOffDateTime = () => pickUpCalander();
-
-  const renderScene = SceneMap({
-    pickUp: PickUpDateTime,
-    dropOff: DropOffDateTime,
-  });
 
   const _renderTabBar = (props: {
     navigationState: {routes: any[]};

@@ -6,20 +6,18 @@ import {isIphoneX} from 'react-native-iphone-x-helper';
 export default StyleSheet.create({
   headerText: {
     fontSize: scale(20),
-    color: '#026786',
-    fontWeight: '500',
+    color: Colors.turquoiseSecondary,
     marginLeft: scale(20),
+    fontFamily: Fonts.MuseoSansRounded5,
   },
   backContain: {
     backgroundColor: Colors.perlWhite,
     paddingVertical: scale(5),
     flexDirection: 'row',
-    alignItems: 'center',
   },
   backArrow: {
     height: scale(18),
     width: scale(18),
     marginLeft: scale(30),
-    // marginRight: scale(20),
   },
 });

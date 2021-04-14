@@ -1,26 +1,21 @@
 // Global Colors
 export const Colors = {
-  perlWhite: '#FFF',
-  accessButtonColor: '#20266D',
-  greyText: 'grey',
-  carbonBlack: '#000',
-  greenCall: '#8bd203',
-};
-
-// Global Gradient Colors
-export const GradientColors = {
-  headerGradient: ['#09c6f9', '#045de9'],
-  buttonGradient: ['#0bab64', '#3bb78f'],
-  whiteGradient: ['#FFF', '#FFF'],
+  perlWhite: '#FCFCFC',
+  greyShade: '#F6F6F6',
+  primaryTeal: '#00A3AD',
+  turquoisePrimary: '#0D6786',
+  turquoiseSecondary: '#026786',
+  primaryMellow: '#FECD2A',
 };
 
 // Global Fonts
 export const Fonts = {
-  helveticaNeueMedium: 'HelveticaNeue-Medium',
-  helveticaNeueLight: 'HelveticaNeue-Light',
-  helveticaNeueThin: 'HelveticaNeue-Thin',
-  helveticaNeueRegular: 'HelveticaNeue',
-  helveticaNeueCondensedBold: 'HelveticaNeue-CondensedBold',
+  MuseoSansRounded1: 'MuseoSansRounded-100',
+  MuseoSansRounded3: 'MuseoSansRounded-300',
+  MuseoSansRounded5: 'MuseoSansRounded-500',
+  MuseoSansRounded7: 'MuseoSansRounded-700',
+  MuseoSansRounded9: 'MuseoSansRounded-900',
+  MuseoSansRounded10: 'MuseoSansRounded-1000',
 };
 
 // Global Images
