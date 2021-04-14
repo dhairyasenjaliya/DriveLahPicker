@@ -6,14 +6,14 @@ export default StyleSheet.create({
     flex: 1,
   },
   commonHeader: {
-    height: scale(45),
+    height: scale(40),
     backgroundColor: '#F6F6F6',
     justifyContent: 'center',
     paddingLeft: scale(30),
   },
   commonHeaderText: {
     color: '#026786',
-    fontSize: scale(16),
+    fontSize: scale(14),
     fontWeight: 'bold',
   },
   tabStyle: {
@@ -51,15 +51,15 @@ export default StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: scale(5),
     zIndex: 200,
   },
   alignCenter: {
     alignContent: 'center',
   },
   yellowDot: {
-    height: 20,
-    width: 20,
+    height: scale(18),
+    width: scale(18),
     backgroundColor: '#fdd654',
     position: 'absolute',
     borderRadius: 50,
@@ -82,7 +82,7 @@ export default StyleSheet.create({
     paddingHorizontal: scale(150),
   },
   slideTextContain: {
-    marginTop: 20,
+    marginTop: scale(10),
     alignItems: 'center',
   },
   slideText: {
@@ -95,7 +95,7 @@ export default StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: scale(20),
+    marginTop: scale(10),
   },
   timeComponentMain: {
     width: scale(50),

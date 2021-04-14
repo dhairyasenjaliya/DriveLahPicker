@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, useWindowDimensions, TouchableOpacity} from 'react-native';
 
 // Third Party Packages Declare
-import {Calendar} from 'react-native-calendars';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 import moment from 'moment';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
@@ -12,7 +12,51 @@ import {scale} from 'react-native-size-matters';
 
 // Custom Packages Declare
 import styles from './styles';
+import HeaderCoponent from '../../components/headerComponent';
 // End Custom Packages Declare
+
+// LocaleConfig.locales['fr'] = {
+//   monthNames: [
+//     'Janvier',
+//     'Février',
+//     'Mars',
+//     'Avril',
+//     'Mai',
+//     'Juin',
+//     'Juillet',
+//     'Août',
+//     'Septembre',
+//     'Octobre',
+//     'Novembre',
+//     'Décembre',
+//   ],
+//   monthNamesShort: [
+//     'Janv.',
+//     'Févr.',
+//     'Mars',
+//     'Avril',
+//     'Mai',
+//     'Juin',
+//     'Juil.',
+//     'Août',
+//     'Sept.',
+//     'Oct.',
+//     'Nov.',
+//     'Déc.',
+//   ],
+//   dayNames: [
+//     'Dimanche',
+//     'Lundi',
+//     'Mardi',
+//     'Mercredi',
+//     'Jeudi',
+//     'Vendredi',
+//     'Samedi',
+//   ],
+//   dayNamesShort: ['loda.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+//   today: "Aujourd'hui",
+// };
+// LocaleConfig.defaultLocale = 'fr';
 
 // Global Level Props To Identify Data Coming From Previos Screen
 interface IProps {
@@ -24,11 +68,24 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
   const layout = useWindowDimensions();
 
   // Declare All Local State Used
-  const [pickUpDate, setPickUpDate] = useState<Date>(
+  const [index, changeTab] = React.useState(0);
+  // Time Set
+  const [pickUpTime, setpickUpTime] = React.useState(0);
+  const [dropOffTime, setDropOffTime] = React.useState(0);
+  // Date Set
+  const [defaultSeletedDate, setdefaultSeletedDate] = useState<string | any>(
     moment().format('YYYY-MM-DD'),
   );
-  const [index, setIndex] = React.useState(0);
-  const [pickUpTime, setpickUpTime] = React.useState(0);
+  const [markedPickupDate, setMarkedPickupDate] = useState<Array | any>({});
+  const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
+    '',
+  );
+
+  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array | any>({});
+  const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
+    '',
+  );
+
   // End of Declared Local State Used
 
   // Route Parameters
@@ -65,7 +122,7 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     '12 PM',
   ];
 
-  const displayTimeSliderComponent = (item, index) => {
+  const displayTimeSliderComponent = item => {
     return (
       <View>
         <View style={styles.timeComponentMain}>
@@ -80,56 +137,45 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
     return (
       <View style={styles.pickUpCal}>
         <Calendar
+          // onMonthChange={month => {
+          //   // console.log('month changed', month);
+          // }}
           onDayPress={day => {
-            setPickUpDate(day.dateString);
+            setSelectedPickupDate(day.dateString);
+            setMarkedPickupDate({
+              [day.dateString]: {
+                customStyles: {
+                  container: {
+                    backgroundColor: '#fdd654',
+                    borderRadius: 5,
+                  },
+                  text: {
+                    color: '#026786',
+                    fontWeight: 'bold',
+                  },
+                },
+              },
+            });
           }}
-          // markingType={'multi-dot'}
-          // monthFormat={'MMMM'}
-          onMonthChange={month => {
-            console.log('month changed', month);
-          }}
+          markingType={'custom'}
+          enableSwipeMonths
+          current={selectedPickupDate ? selectedPickupDate : defaultSeletedDate}
+          markedDates={JSON.parse(JSON.stringify(markedPickupDate))}
           hideExtraDays={true}
-          disableMonthChange={true}
+          style={styles.calenderHeight}
           firstDay={1}
           showWeekNumbers={false}
-          enableSwipeMonths={true}
+          monthFormat={'MMMM'}
           theme={{
-            selectedDayBackgroundColor: '#00adf5',
-            // calendarBackground: '#ffffff',
-            // textSectionTitleColor: '#b6c1cd',
-
-            // selectedDayTextColor: '#ffffff',
-            // todayTextColor: '#00adf5',
-            // dayTextColor: '#2d4150',
-            // textDisabledColor: '#d9e1e8',
-            // // dotColor: '#00adf5',
-            // selectedDotColor: '#026786',
+            selectedDayBackgroundColor: '#FF5D4E',
             arrowColor: '#026786',
-            // // disabledArrowColor: '#d9e1e8',
-            monthTextColor: '#026786',
-            // // indicatorColor: 'blue',
-            // textDayFontWeight: '300',
-            // textMonthFontWeight: 'bold',
             textDayHeaderFontWeight: '300',
             textDayFontSize: 16,
             textMonthFontSize: 16,
             textDayHeaderFontSize: 16,
-          }}
-          style={styles.calenderHeight}
-          markingType={'custom'}
-          markedDates={{
-            '2021-04-16': {
-              customStyles: {
-                container: {
-                  backgroundColor: '#fdd654',
-                  borderRadius: 5,
-                },
-                text: {
-                  color: '#026786',
-                  fontWeight: 'bold',
-                },
-              },
-            },
+            monthTextColor: '#026786',
+            dayTextColor: '#026786',
+            textDisabledColor: 'grey',
           }}
         />
         <View style={styles.commonHeader}>
@@ -152,7 +198,7 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
             itemWidth={scale(50)}
             style={{}}
             contentContainerStyle={styles.horizontalPicker}
-            defaultIndex={pickUpTime}
+            defaultIndex={pickUpTime ? pickUpTime : 19}
             onChange={data => {
               console.log(data);
               setTimeout(() => {
@@ -215,15 +261,18 @@ const TripDateTimeSelectorScreen: React.FC<IProps> = ({navigation}) => {
 
   return (
     // InternalTab View
-    <TabView
-      navigationState={{index, routes}}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{width: layout.width}}
-      swipeEnabled={false}
-      renderTabBar={_renderTabBar}
-      style={styles.tabStyle}
-    />
+    <View style={styles.container}>
+      <HeaderCoponent goBack={true} title={'Select your trip dates'} />
+      <TabView
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={changeTab}
+        initialLayout={{width: layout.width}}
+        swipeEnabled={false}
+        renderTabBar={_renderTabBar}
+        style={styles.tabStyle}
+      />
+    </View>
   );
 };
 export default TripDateTimeSelectorScreen;

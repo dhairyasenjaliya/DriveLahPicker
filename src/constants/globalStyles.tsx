@@ -25,7 +25,5 @@ export const Fonts = {
 
 // Global Images
 export const DefaultImage = {
-  userDefault: require('../assets/images/profile.png'),
-  backArrow: require('../assets/images/backArrow.png'),
-  call: require('../assets/images/call.png'),
+  backArrow: require('../assets/images/backArrow/arrow-left-solid.png'),
 };

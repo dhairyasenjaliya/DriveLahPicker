@@ -6,23 +6,20 @@ import {isIphoneX} from 'react-native-iphone-x-helper';
 export default StyleSheet.create({
   headerText: {
     fontSize: scale(20),
-    alignSelf: 'center',
-    color: Colors.carbonBlack,
-    fontFamily: Fonts.helveticaNeueMedium,
+    color: '#026786',
+    fontWeight: '500',
+    marginLeft: scale(20),
   },
   backContain: {
-    height: isIphoneX() ? scale(75) : verticalScale(60),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.44,
-    shadowRadius: 10.32,
-    elevation: 20,
-    borderBottomLeftRadius: scale(15),
-    borderBottomRightRadius: scale(15),
     backgroundColor: Colors.perlWhite,
-    justifyContent: 'center',
+    paddingVertical: scale(5),
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backArrow: {
+    height: scale(18),
+    width: scale(18),
+    marginLeft: scale(30),
+    // marginRight: scale(20),
   },
 });
