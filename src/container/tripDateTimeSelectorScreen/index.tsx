@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {Colors, Fonts} from '../../constants/globalStyles';
+import {Colors} from '../../constants/globalStyles';
 
 // Third Party Packages Declare
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import moment from 'moment';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import {scale} from 'react-native-size-matters';
@@ -80,15 +80,17 @@ function TripDateTimeSelectorScreen({navigation}) {
   const [pickUpTime, setpickUpTime] = React.useState(0);
   const [dropOffTime, setDropOffTime] = React.useState(0);
   // Date Set
-  const [defaultSeletedDate, setdefaultSeletedDate] = useState<string | any>(
+  const [defaultSeletedDate] = useState<string | any>(
     moment().format('YYYY-MM-DD'),
   );
-  const [markedPickupDate, setMarkedPickupDate] = useState<Array | any>({});
+  const [markedPickupDate, setMarkedPickupDate] = useState<Array<50> | any>({});
   const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
     '',
   );
 
-  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array | any>({});
+  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>(
+    {},
+  );
   const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
     '',
   );
@@ -150,31 +152,60 @@ function TripDateTimeSelectorScreen({navigation}) {
         contentContainerStyle={styles.scrollContent}
         style={styles.pickUpCal}>
         <Calendar
-          // onMonthChange={month => {
-          //   // console.log('month changed', month);
-          // }}
+          key={index}
+          current={
+            index === 0
+              ? selectedPickupDate
+                ? selectedPickupDate
+                : defaultSeletedDate
+              : selectedDropOffDate
+              ? selectedDropOffDate
+              : defaultSeletedDate
+          }
+          // setSelectedDropOffDate
+          minDate={index === 0 ? '' : selectedPickupDate}
+          markedDates={
+            index === 0
+              ? JSON.parse(JSON.stringify(markedPickupDate))
+              : JSON.parse(JSON.stringify(markedDropOffDate))
+          }
           onDayPress={day => {
-            setSelectedPickupDate(day.dateString);
-            setMarkedPickupDate({
-              [day.dateString]: {
-                customStyles: {
-                  container: {
-                    backgroundColor: Colors.primaryMellow,
-                    borderRadius: 5,
-                  },
-                  text: {
-                    color: Colors.turquoiseSecondary,
-                    fontWeight: '700',
-                    // fontFamily: Fonts.MuseoSansRounded3,
+            if (index === 0) {
+              setSelectedPickupDate(day.dateString);
+              setMarkedPickupDate({
+                [day.dateString]: {
+                  customStyles: {
+                    container: {
+                      backgroundColor: Colors.primaryMellow,
+                      borderRadius: 5,
+                    },
+                    text: {
+                      color: Colors.turquoiseSecondary,
+                      fontWeight: '700',
+                    },
                   },
                 },
-              },
-            });
+              });
+            } else {
+              setSelectedDropOffDate(day.dateString);
+              setMarkedDropOffDate({
+                [day.dateString]: {
+                  customStyles: {
+                    container: {
+                      backgroundColor: Colors.primaryMellow,
+                      borderRadius: 5,
+                    },
+                    text: {
+                      color: Colors.turquoiseSecondary,
+                      fontWeight: '700',
+                    },
+                  },
+                },
+              });
+            }
           }}
           markingType={'custom'}
           enableSwipeMonths
-          current={selectedPickupDate ? selectedPickupDate : defaultSeletedDate}
-          markedDates={JSON.parse(JSON.stringify(markedPickupDate))}
           hideExtraDays={true}
           style={styles.calenderHeight}
           firstDay={1}
@@ -187,17 +218,31 @@ function TripDateTimeSelectorScreen({navigation}) {
             textDayHeaderFontSize: 18,
             monthTextColor: Colors.turquoiseSecondary,
             dayTextColor: Colors.turquoiseSecondary,
-            textDisabledColor: 'grey',
-            // textMonthFontFamily: Fonts.MuseoSansRounded5,
+            textDisabledColor: '#7fb2c1',
           }}
         />
         <View style={styles.commonHeader}>
           <Text style={styles.commonHeaderText}>Pickup Time</Text>
         </View>
         <View style={styles.dateDisp}>
-          <Text style={styles.dateDispText}>21st Jan</Text>
+          <Text style={styles.dateDispText}>
+            {index === 0
+              ? selectedPickupDate &&
+                moment(selectedPickupDate).format('Do MMM')
+              : selectedDropOffDate &&
+                moment(selectedDropOffDate).format('Do MMM')}
+          </Text>
           <View style={styles.timeDisp}>
-            <Text style={styles.timeDispText}>8:00 AM</Text>
+            {index === 0 && pickUpTime ? (
+              <Text style={styles.timeDispText}>
+                {pickUpTime ? allHour[pickUpTime] : allHour[19]}
+              </Text>
+            ) : null}
+            {index === 1 && dropOffTime ? (
+              <Text style={styles.timeDispText}>
+                {dropOffTime ? allHour[dropOffTime] : allHour[19]}
+              </Text>
+            ) : null}
           </View>
 
           <View style={styles.alignCenter}>
@@ -209,12 +254,24 @@ function TripDateTimeSelectorScreen({navigation}) {
             data={allHour}
             renderItem={displayTimeSliderComponent}
             itemWidth={scale(50)}
-            style={{}}
             contentContainerStyle={styles.horizontalPicker}
-            defaultIndex={pickUpTime ? pickUpTime : 19}
+            defaultIndex={
+              index === 0
+                ? pickUpTime
+                  ? pickUpTime
+                  : 19
+                : dropOffTime
+                ? dropOffTime
+                : 19
+            }
             onChange={data => {
+              // setDropOffTime
               setTimeout(() => {
-                setpickUpTime(data);
+                if (index === 0) {
+                  setpickUpTime(data);
+                } else {
+                  setDropOffTime(data);
+                }
               }, 100);
             }}
           />
