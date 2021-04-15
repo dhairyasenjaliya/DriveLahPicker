@@ -4,24 +4,33 @@ import {Colors, Fonts} from '../../constants/globalStyles';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.perlWhite,
   },
-  accessContactButton: {
-    height: verticalScale(50),
-    backgroundColor: Colors.accessButtonColor,
-    borderRadius: scale(50),
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+  buttonInside: {
+    // height: verticalScale(50),
+    // borderRadius: scale(50),
   },
-  accessButtonText: {
-    fontSize: scale(14),
-    color: Colors.perlWhite,
-    fontFamily: Fonts.helveticaNeueMedium,
-    paddingHorizontal: scale(10),
-  },
+
   buttonPos: {
+    height: scale(52),
+    width: scale(310),
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: Colors.borderGrey,
+    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+    paddingHorizontal: scale(20),
+    marginTop: scale(10),
+  },
+  titleText: {
+    color: Colors.textGrey,
+    fontFamily: Fonts.MuseoSansRounded3,
+    fontSize: 14,
+  },
+  subTitleText: {
+    color: Colors.turquoisePrimary,
+    marginTop: scale(5),
+    fontFamily: Fonts.MuseoSansRounded5,
+    fontSize: 18,
   },
 });

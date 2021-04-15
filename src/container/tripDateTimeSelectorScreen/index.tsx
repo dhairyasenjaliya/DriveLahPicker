@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {Colors} from '../../constants/globalStyles';
 
 // Third Party Packages Declare
 import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -15,11 +14,16 @@ import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import {scale} from 'react-native-size-matters';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // End Third Party Packages Declare
 
 // Custom Packages Declare
 import styles from './styles';
 import HeaderCoponent from '../../components/headerComponent';
+import {CustomHour} from '../../constants/utilsConst';
+import {Colors} from '../../constants/globalStyles';
+
 // End Custom Packages Declare
 
 // LocaleConfig.locales['fr'] = {
@@ -70,12 +74,12 @@ interface IProps {
   navigation: Object;
 }
 
-function TripDateTimeSelectorScreen({navigation}) {
+function TripDateTimeSelectorScreen({navigation, route}) {
   // Used For Tab Size
   const layout = useWindowDimensions();
 
   // Declare All Local State Used
-  const [index, changeTab] = React.useState(0);
+  const [index, changeTab] = React.useState(route.params.index);
   // Time Set
   const [pickUpTime, setpickUpTime] = React.useState(19);
   const [dropOffTime, setDropOffTime] = React.useState(21);
@@ -103,6 +107,7 @@ function TripDateTimeSelectorScreen({navigation}) {
 
   const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>({
     [moment().add(1, 'day').format('YYYY-MM-DD')]: {
+      // Custom Style Object We Cant Access From Styles.tsx
       customStyles: {
         container: {
           backgroundColor: Colors.primaryMellow,
@@ -118,7 +123,6 @@ function TripDateTimeSelectorScreen({navigation}) {
   const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
     moment().add(1, 'day').format('YYYY-MM-DD'),
   );
-
   // End of Declared Local State Used
 
   useEffect(() => {
@@ -132,42 +136,29 @@ function TripDateTimeSelectorScreen({navigation}) {
   ]);
   // Route Parameters End
 
-  const allHour = [
-    '1 AM',
-    '2 AM',
-    '3 AM',
-    '4 AM',
-    '5 AM',
-    '6 AM',
-    '7 AM',
-    '8 AM',
-    '9 AM',
-    '10 AM',
-    '11 AM',
-    '12 AM',
-    '1 PM',
-    '2 PM',
-    '3 PM',
-    '4 PM',
-    '5 PM',
-    '6 PM',
-    '7 PM',
-    '8 PM',
-    '9 PM',
-    '10 PM',
-    '11 PM',
-    '12 PM',
-  ];
-
   const displayTimeSliderComponent = item => {
+    let validateTime = item && item.replace(' ', '');
     return (
       <View>
         <View style={styles.timeComponentMain}>
           <View style={styles.timeSecondaryComp} />
-          <Text style={styles.hourText}>{item}</Text>
+          <Text style={styles.hourText}>{validateTime}</Text>
         </View>
       </View>
     );
+  };
+
+  const saveTripDates = async () => {
+    try {
+      await AsyncStorage.setItem('pickUpTime', pickUpTime.toString());
+      await AsyncStorage.setItem('pickUpDate', selectedPickupDate);
+      await AsyncStorage.setItem('dropOffTime', dropOffTime.toString());
+      await AsyncStorage.setItem('DropOffDate', selectedDropOffDate);
+      navigation.goBack();
+    } catch (e) {
+      console.log('Error In Saving ');
+      // saving error
+    }
   };
 
   const pickUpCalander = () => {
@@ -199,6 +190,7 @@ function TripDateTimeSelectorScreen({navigation}) {
               setSelectedDropOffDate(day.dateString);
               setMarkedPickupDate({
                 [day.dateString]: {
+                  // Custom Style Object We Cant Access From Styles.tsx
                   customStyles: {
                     container: {
                       backgroundColor: Colors.primaryMellow,
@@ -229,6 +221,7 @@ function TripDateTimeSelectorScreen({navigation}) {
               setSelectedDropOffDate(day.dateString);
               setMarkedDropOffDate({
                 [day.dateString]: {
+                  // Custom Style Object We Cant Access From Styles.tsx
                   customStyles: {
                     container: {
                       backgroundColor: Colors.primaryMellow,
@@ -274,12 +267,12 @@ function TripDateTimeSelectorScreen({navigation}) {
           <View style={styles.timeDisp}>
             {index === 0 && pickUpTime ? (
               <Text style={styles.timeDispText}>
-                {pickUpTime ? allHour[pickUpTime] : allHour[19]}
+                {pickUpTime ? CustomHour[pickUpTime] : CustomHour[19]}
               </Text>
             ) : null}
             {index === 1 && dropOffTime ? (
               <Text style={styles.timeDispText}>
-                {dropOffTime ? allHour[dropOffTime] : allHour[19]}
+                {dropOffTime ? CustomHour[dropOffTime] : CustomHour[19]}
               </Text>
             ) : null}
           </View>
@@ -290,9 +283,11 @@ function TripDateTimeSelectorScreen({navigation}) {
           </View>
 
           <HorizontalPicker
-            data={allHour}
+            key={index}
+            data={CustomHour}
             renderItem={displayTimeSliderComponent}
             itemWidth={scale(50)}
+            snapTimeout={50}
             contentContainerStyle={styles.horizontalPicker}
             defaultIndex={
               index === 0
@@ -301,7 +296,7 @@ function TripDateTimeSelectorScreen({navigation}) {
                   : 19
                 : dropOffTime
                 ? dropOffTime
-                : 19
+                : 21
             }
             onChange={data => {
               setTimeout(() => {
@@ -318,7 +313,7 @@ function TripDateTimeSelectorScreen({navigation}) {
           </View>
           <TouchableOpacity
             onPress={() => {
-              index === 0 ? changeTab(1) : changeTab(0);
+              index === 0 ? changeTab(1) : saveTripDates();
             }}
             style={styles.customButton}>
             <Text style={styles.buttonText}>{`Save & Continue`}</Text>
@@ -349,10 +344,20 @@ function TripDateTimeSelectorScreen({navigation}) {
                     route.title === 'Pickup'
                       ? selectedPickupDate &&
                         moment(selectedPickupDate).format('DD MMM') +
-                          `${pickUpTime ? ', ' + allHour[pickUpTime] : ''}`
+                          `${
+                            pickUpTime
+                              ? ', ' +
+                                CustomHour[pickUpTime].replace(' ', ':00 ')
+                              : ''
+                          }`
                       : selectedDropOffDate &&
                         moment(selectedDropOffDate).format('DD MMM') +
-                          `${dropOffTime ? ', ' + allHour[dropOffTime] : ''}`
+                          `${
+                            dropOffTime
+                              ? ', ' +
+                                CustomHour[dropOffTime].replace(' ', ':00 ')
+                              : ''
+                          }`
                   }
                 </Text>
                 <Text style={styles.tabSubTitle}>
@@ -376,8 +381,11 @@ function TripDateTimeSelectorScreen({navigation}) {
   return (
     // InternalTab View
     <View style={styles.container}>
-      <HeaderCoponent goBack={true} title={'Select your trip dates'} />
-      {/* {pickUpCalander()} */}
+      <HeaderCoponent
+        onPress={() => navigation.goBack()}
+        goBack={true}
+        title={'Select your trip dates'}
+      />
       <TabView
         navigationState={{index, routes}}
         renderScene={({route}) => {

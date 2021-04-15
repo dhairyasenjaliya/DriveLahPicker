@@ -18,7 +18,7 @@ function Navigator() {
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           {/* Define All Screen As Component */}
-          {/* <Stack.Screen name="mainScreen" component={MainScreen} /> */}
+          <Stack.Screen name="mainScreen" component={MainScreen} />
           <Stack.Screen
             name="tripDateTimeSelectorScreen"
             component={TripDateTimeSelectorScreen}

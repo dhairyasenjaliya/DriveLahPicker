@@ -138,7 +138,7 @@ export default StyleSheet.create({
     color: Colors.turquoiseSecondary,
     marginTop: scale(5),
     fontFamily: Fonts.MuseoSansRounded3,
-    fontSize: 14,
+    fontSize: 12,
   },
   buttonText: {
     color: Colors.perlWhite,
