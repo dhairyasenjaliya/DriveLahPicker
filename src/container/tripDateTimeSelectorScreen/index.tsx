@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 // Third Party Packages Declare
@@ -81,8 +82,8 @@ function TripDateTimeSelectorScreen({navigation, route}) {
   // Declare All Local State Used
   const [index, changeTab] = React.useState(route.params.index);
   // Time Set
-  const [pickUpTime, setpickUpTime] = React.useState(19);
-  const [dropOffTime, setDropOffTime] = React.useState(21);
+  const [pickUpTime, setpickUpTime] = useState<string | any>(19);
+  const [dropOffTime, setDropOffTime] = useState<string | any>(21);
   // Date Set
   const [defaultSeletedDate] = useState<string | any>(
     moment().format('YYYY-MM-DD'),
@@ -125,9 +126,60 @@ function TripDateTimeSelectorScreen({navigation, route}) {
   );
   // End of Declared Local State Used
 
-  useEffect(() => {
+  useEffect(async () => {
+    try {
+      let pickUpTime = await AsyncStorage.getItem('pickUpTime');
+      let pickUpDate = await AsyncStorage.getItem('pickUpDate');
+      let dropOffTime = await AsyncStorage.getItem('dropOffTime');
+      let dropOffDate = await AsyncStorage.getItem('DropOffDate');
+      if (pickUpTime) {
+        setpickUpTime(pickUpTime);
+      }
+      if (pickUpDate) {
+        setSelectedPickupDate(pickUpDate);
+        setMarkedPickupDate({
+          [pickUpDate]: {
+            customStyles: {
+              container: {
+                backgroundColor: Colors.primaryMellow,
+                borderRadius: 5,
+              },
+              text: {
+                color: Colors.turquoiseSecondary,
+                fontWeight: '700',
+              },
+            },
+          },
+        });
+      }
+      if (dropOffTime) {
+        setDropOffTime(dropOffTime);
+      }
+      if (dropOffDate) {
+        setSelectedDropOffDate(dropOffDate);
+        setMarkedDropOffDate({
+          [dropOffDate]: {
+            customStyles: {
+              container: {
+                backgroundColor: Colors.primaryMellow,
+                borderRadius: 5,
+              },
+              text: {
+                color: Colors.turquoiseSecondary,
+                fontWeight: '700',
+              },
+            },
+          },
+        });
+      }
+
+      // console.log('pickUpTime', pickUpTime);
+      // value previously stored
+    } catch (e) {
+      // error reading value
+    }
     return () => {};
-  }, [pickUpTime]);
+  }, []);
 
   // Route Parameters
   const [routes] = React.useState([
@@ -156,6 +208,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
       await AsyncStorage.setItem('DropOffDate', selectedDropOffDate);
       navigation.goBack();
     } catch (e) {
+      Alert.alert('Please Select Date');
       console.log('Error In Saving ');
       // saving error
     }
@@ -167,7 +220,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
         contentContainerStyle={styles.scrollContent}
         style={styles.pickUpCal}>
         <Calendar
-          key={index}
+          key={[index, selectedPickupDate, selectedDropOffDate]}
           current={
             index === 0
               ? selectedPickupDate
@@ -267,12 +320,16 @@ function TripDateTimeSelectorScreen({navigation, route}) {
           <View style={styles.timeDisp}>
             {index === 0 && pickUpTime ? (
               <Text style={styles.timeDispText}>
-                {pickUpTime ? CustomHour[pickUpTime] : CustomHour[19]}
+                {pickUpTime
+                  ? CustomHour[pickUpTime].replace(' ', ':00 ')
+                  : CustomHour[19]}
               </Text>
             ) : null}
             {index === 1 && dropOffTime ? (
               <Text style={styles.timeDispText}>
-                {dropOffTime ? CustomHour[dropOffTime] : CustomHour[19]}
+                {dropOffTime
+                  ? CustomHour[dropOffTime].replace(' ', ':00 ')
+                  : CustomHour[19]}
               </Text>
             ) : null}
           </View>
@@ -289,6 +346,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
             itemWidth={scale(50)}
             snapTimeout={50}
             contentContainerStyle={styles.horizontalPicker}
+            style={styles.horizontalPickerStyle}
             defaultIndex={
               index === 0
                 ? pickUpTime
@@ -339,26 +397,22 @@ function TripDateTimeSelectorScreen({navigation, route}) {
             return (
               <View>
                 <Text style={styles.tabTitle}>
-                  {
-                    // '21 Jan, 8:00 PM
-                    route.title === 'Pickup'
-                      ? selectedPickupDate &&
-                        moment(selectedPickupDate).format('DD MMM') +
-                          `${
-                            pickUpTime
-                              ? ', ' +
-                                CustomHour[pickUpTime].replace(' ', ':00 ')
-                              : ''
-                          }`
-                      : selectedDropOffDate &&
-                        moment(selectedDropOffDate).format('DD MMM') +
-                          `${
-                            dropOffTime
-                              ? ', ' +
-                                CustomHour[dropOffTime].replace(' ', ':00 ')
-                              : ''
-                          }`
-                  }
+                  {route.title === 'Pickup'
+                    ? selectedPickupDate &&
+                      moment(selectedPickupDate).format('DD MMM') +
+                        `${
+                          pickUpTime
+                            ? ', ' + CustomHour[pickUpTime].replace(' ', ':00 ')
+                            : ''
+                        }`
+                    : selectedDropOffDate &&
+                      moment(selectedDropOffDate).format('DD MMM') +
+                        `${
+                          dropOffTime
+                            ? ', ' +
+                              CustomHour[dropOffTime].replace(' ', ':00 ')
+                            : ''
+                        }`}
                 </Text>
                 <Text style={styles.tabSubTitle}>
                   {route.title === 'Pickup'

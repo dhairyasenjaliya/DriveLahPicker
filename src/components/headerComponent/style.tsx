@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {scale, verticalScale} from 'react-native-size-matters';
 import {Colors, Fonts} from '../../constants/globalStyles';
-import {isIphoneX} from 'react-native-iphone-x-helper';
+import {ifIphoneX} from 'react-native-iphone-x-helper';
 
 export default StyleSheet.create({
   headerText: {
@@ -12,8 +12,16 @@ export default StyleSheet.create({
   },
   backContain: {
     backgroundColor: Colors.perlWhite,
-    paddingVertical: scale(5),
     flexDirection: 'row',
+    ...ifIphoneX(
+      {
+        paddingVertical: scale(10),
+      },
+      {
+        paddingTop: scale(20),
+        paddingBottom: scale(10),
+      },
+    ),
   },
   backArrow: {
     height: scale(18),

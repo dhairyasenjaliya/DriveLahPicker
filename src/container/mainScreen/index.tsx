@@ -23,8 +23,8 @@ interface IProps {
 function MainScreen({navigation}) {
   const isFocused = useIsFocused();
 
-  const [pickUpTime, setpickUpTime] = useState<String | any>('');
-  const [dropOffTime, setDropOffTime] = useState<String | any>('');
+  const [pickUpTime, setpickUpTime] = useState<String | any>(0);
+  const [dropOffTime, setDropOffTime] = useState<String | any>(0);
   const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
     '',
   );
@@ -51,6 +51,19 @@ function MainScreen({navigation}) {
     return () => {};
   }, [isFocused]);
 
+  const fetchDateTime = (selectedDate, selectedTime) => {
+    //  moment(selectedPickupDate).format('DD MMM') +`, ` + CustomHour[pickUpTime].replace(' ', ':00 ')
+    let validateDate = selectedDate
+      ? moment(selectedDate).format('DD MMM')
+      : '';
+    let validateTime = selectedTime
+      ? CustomHour[selectedTime].replace(' ', ':00 ')
+      : '';
+    let displayDateTime =
+      validateDate && validateTime ? validateDate + ', ' + validateTime : '';
+    return displayDateTime;
+  };
+
   return (
     <View style={styles.container}>
       <CustomHeader title={'Date and Time selector'} />
@@ -65,9 +78,7 @@ function MainScreen({navigation}) {
         {/* <Text style={styles.subTitleText}>{'21 Jan, 8:00 PM'}</Text>
          */}
         <Text style={styles.subTitleText}>
-          {moment(selectedPickupDate).format('DD MMM') +
-            `, ` +
-            CustomHour[pickUpTime].replace(' ', ':00 ')}
+          {fetchDateTime(selectedPickupDate, pickUpTime)}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -79,9 +90,7 @@ function MainScreen({navigation}) {
         style={styles.buttonPos}>
         <Text style={styles.titleText}>{'Dropoff'}</Text>
         <Text style={styles.subTitleText}>
-          {moment(selectedDropOffDate).format('DD MMM') +
-            `, ` +
-            CustomHour[dropOffTime].replace(' ', ':00 ')}
+          {fetchDateTime(selectedDropOffDate, dropOffTime)}
         </Text>
       </TouchableOpacity>
     </View>

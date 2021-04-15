@@ -81,6 +81,16 @@ export default StyleSheet.create({
   },
   alignCenter: {
     alignContent: 'center',
+    justifyContent: 'center',
+    zIndex: 20,
+  },
+  horizontalPicker: {
+    paddingHorizontal: scale(150),
+  },
+  horizontalPickerStyle: {
+    borderTopWidth: 1.5,
+    borderColor: Colors.turquoiseSecondary,
+    marginTop: scale(20),
   },
   yellowDot: {
     height: scale(18),
@@ -93,17 +103,11 @@ export default StyleSheet.create({
     zIndex: 900,
   },
   vertLine: {
-    borderWidth: 1,
+    borderRightWidth: 1.5,
     position: 'absolute',
     top: scale(-30),
     height: scale(40),
     borderColor: Colors.turquoiseSecondary,
-  },
-  horizontalPicker: {
-    borderTopWidth: 1.5,
-    marginTop: scale(20),
-    borderColor: Colors.turquoiseSecondary,
-    paddingHorizontal: scale(150),
   },
   slideTextContain: {
     marginTop: scale(10),
