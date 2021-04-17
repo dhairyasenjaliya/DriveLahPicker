@@ -1,58 +1,65 @@
-import React, {useEffect, useState, useFocusEffect} from 'react';
-import {
-  PermissionsAndroid,
-  View,
-  Text,
-  TouchableOpacity,
-  Linking,
-  Alert,
-  Platform,
-} from 'react-native';
-import styles from './styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 import CustomHeader from '../../components/headerComponent';
 import moment from 'moment';
+
+import {useSelector, RootStateOrAny} from 'react-redux';
+
 import {CustomHour} from '../../constants/utilsConst';
+import styles from './styles';
 
-interface IProps {
-  navigation: Object;
-}
-// Global Level Props To Identify Data Coming From Previos Screen
+function MainScreen({navigation}: any) {
+  const pickUpTime = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.pickupTime;
+  });
 
-function MainScreen({navigation}) {
-  const isFocused = useIsFocused();
+  const dropOffTime = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.dropOffTime;
+  });
 
-  const [pickUpTime, setpickUpTime] = useState<String | any>(0);
-  const [dropOffTime, setDropOffTime] = useState<String | any>(0);
-  const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
-    '',
-  );
-  const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
-    '',
-  );
+  const selectedPickupDate = useSelector((state: RootStateOrAny) => {
+    console.log(
+      'state.dateTimeReducer.pickupDate;',
+      state.dateTimeReducer.pickupDate,
+    );
+    return state.dateTimeReducer.pickupDate;
+  });
 
-  useEffect(async () => {
-    // effect
-    try {
-      let pickUpTime = await AsyncStorage.getItem('pickUpTime');
-      let pickUpDate = await AsyncStorage.getItem('pickUpDate');
-      let dropOffTime = await AsyncStorage.getItem('dropOffTime');
-      let dropOffDate = await AsyncStorage.getItem('DropOffDate');
-      setpickUpTime(pickUpTime);
-      setDropOffTime(dropOffTime);
-      setSelectedPickupDate(pickUpDate);
-      setSelectedDropOffDate(dropOffDate);
-      // console.log('pickUpTime', pickUpTime);
-      // value previously stored
-    } catch (e) {
-      // error reading value
-    }
-    return () => {};
-  }, [isFocused]);
+  const selectedDropOffDate = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.dropOffDate;
+  });
 
-  const fetchDateTime = (selectedDate, selectedTime) => {
-    //  moment(selectedPickupDate).format('DD MMM') +`, ` + CustomHour[pickUpTime].replace(' ', ':00 ')
+  // const [pickUpTime, setpickUpTime] = useState<String | any>(0);
+  // const [dropOffTime, setDropOffTime] = useState<String | any>(0);
+  // const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
+  //   '',
+  // );
+  // const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
+  //   '',
+  // );
+
+  // useSelector((state: RootStateOrAny) => {
+  //   console.log('useSelector', state);
+  //   // pickUpTime = state.dateTimeReducer.pickupDate;
+  //   // if (state.dateTimeReducer.pickupDate) {
+  //   //   setSelectedPickupDate(state.dateTimeReducer.pickupDate);
+  //   // }
+  //   // if (state.dateTimeReducer.pickupTime) {
+  //   //   setpickUpTime(state.dateTimeReducer.pickupTime);
+  //   // }
+  //   // if (state.dateTimeReducer.dropOffTime) {
+  //   //   setDropOffTime(state.dateTimeReducer.dropOffTime);
+  //   // }
+  //   // if (state.dateTimeReducer.dropOffDate) {
+  //   //   setSelectedDropOffDate(state.dateTimeReducer.dropOffDate);
+  //   // }
+  // });
+
+  // useEffect(async () => {
+  //   console.log('pickUpTime', pickUpTime);
+  //   return () => {};
+  // }, []);
+  const fetchDateTime = (selectedDate: any, selectedTime: any) => {
     let validateDate = selectedDate
       ? moment(selectedDate).format('DD MMM')
       : '';
@@ -75,8 +82,6 @@ function MainScreen({navigation}) {
         }
         style={styles.buttonPos}>
         <Text style={styles.titleText}>{'Pickup'}</Text>
-        {/* <Text style={styles.subTitleText}>{'21 Jan, 8:00 PM'}</Text>
-         */}
         <Text style={styles.subTitleText}>
           {fetchDateTime(selectedPickupDate, pickUpTime)}
         </Text>

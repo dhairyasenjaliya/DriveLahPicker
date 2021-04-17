@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   useWindowDimensions,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from 'react-native';
 
 // Third Party Packages Declare
@@ -15,8 +14,7 @@ import {TabView, TabBar} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import {scale} from 'react-native-size-matters';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {useSelector, useDispatch, RootStateOrAny} from 'react-redux';
 // End Third Party Packages Declare
 
 // Custom Packages Declare
@@ -24,8 +22,16 @@ import styles from './styles';
 import HeaderCoponent from '../../components/headerComponent';
 import {CustomHour} from '../../constants/utilsConst';
 import {Colors} from '../../constants/globalStyles';
-
 // End Custom Packages Declare
+
+// Actions From Reducers
+import {
+  changePickUpDate,
+  changeDropOffDate,
+  changeDropOffTime,
+  changePickUpTime,
+} from '../../store/dateTime/actions';
+//End Actions From Reducers
 
 // LocaleConfig.locales['fr'] = {
 //   monthNames: [
@@ -70,26 +76,36 @@ import {Colors} from '../../constants/globalStyles';
 // };
 // LocaleConfig.defaultLocale = 'fr';
 
-// Global Level Props To Identify Data Coming From Previos Screen
-interface IProps {
-  navigation: Object;
-}
-
-function TripDateTimeSelectorScreen({navigation, route}) {
+function TripDateTimeSelectorScreen({navigation, route}: any) {
   // Used For Tab Size
   const layout = useWindowDimensions();
-
+  const dispatch = useDispatch();
   // Declare All Local State Used
   const [index, changeTab] = React.useState(route.params.index);
   // Time Set
-  const [pickUpTime, setpickUpTime] = useState<string | any>(19);
-  const [dropOffTime, setDropOffTime] = useState<string | any>(21);
+  const pickUpTimeFromRedux = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.pickupTime;
+  });
+  const [pickUpTime, setpickUpTime] = useState(
+    pickUpTimeFromRedux ? pickUpTimeFromRedux : 19,
+  );
+  const dropOffTimeFromRedux = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.dropOffTime;
+  });
+  const [dropOffTime, setDropOffTime] = useState(
+    dropOffTimeFromRedux ? dropOffTimeFromRedux : 21,
+  );
   // Date Set
   const [defaultSeletedDate] = useState<string | any>(
     moment().format('YYYY-MM-DD'),
   );
+  const selectedPickupDateFromRedux = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.pickupDate;
+  });
   const [markedPickupDate, setMarkedPickupDate] = useState<Array<50> | any>({
-    [moment().format('YYYY-MM-DD')]: {
+    [selectedPickupDateFromRedux
+      ? selectedPickupDateFromRedux
+      : moment().format('YYYY-MM-DD')]: {
       customStyles: {
         container: {
           backgroundColor: Colors.primaryMellow,
@@ -102,12 +118,21 @@ function TripDateTimeSelectorScreen({navigation, route}) {
       },
     },
   });
-  const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
-    moment().format('YYYY-MM-DD'),
+
+  const [selectedPickupDate, setSelectedPickupDate] = useState(
+    selectedPickupDateFromRedux
+      ? selectedPickupDateFromRedux
+      : moment().format('YYYY-MM-DD'),
   );
 
-  const [markedDropOffDate, setMarkedDropOffDate] = useState<Array<50> | any>({
-    [moment().add(1, 'day').format('YYYY-MM-DD')]: {
+  const selectedDropOffDateFromRedux = useSelector((state: RootStateOrAny) => {
+    return state.dateTimeReducer.dropOffDate;
+  });
+
+  const [markedDropOffDate, setMarkedDropOffDate] = useState({
+    [selectedDropOffDateFromRedux
+      ? selectedDropOffDateFromRedux
+      : moment().add(1, 'day').format('YYYY-MM-DD')]: {
       // Custom Style Object We Cant Access From Styles.tsx
       customStyles: {
         container: {
@@ -121,65 +146,12 @@ function TripDateTimeSelectorScreen({navigation, route}) {
       },
     },
   });
-  const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
-    moment().add(1, 'day').format('YYYY-MM-DD'),
+  const [selectedDropOffDate, setSelectedDropOffDate] = useState(
+    selectedDropOffDateFromRedux
+      ? selectedDropOffDateFromRedux
+      : moment().add(1, 'day').format('YYYY-MM-DD'),
   );
   // End of Declared Local State Used
-
-  useEffect(async () => {
-    try {
-      let pickUpTime = await AsyncStorage.getItem('pickUpTime');
-      let pickUpDate = await AsyncStorage.getItem('pickUpDate');
-      let dropOffTime = await AsyncStorage.getItem('dropOffTime');
-      let dropOffDate = await AsyncStorage.getItem('DropOffDate');
-      if (pickUpTime) {
-        setpickUpTime(pickUpTime);
-      }
-      if (pickUpDate) {
-        setSelectedPickupDate(pickUpDate);
-        setMarkedPickupDate({
-          [pickUpDate]: {
-            customStyles: {
-              container: {
-                backgroundColor: Colors.primaryMellow,
-                borderRadius: 5,
-              },
-              text: {
-                color: Colors.turquoiseSecondary,
-                fontWeight: '700',
-              },
-            },
-          },
-        });
-      }
-      if (dropOffTime) {
-        setDropOffTime(dropOffTime);
-      }
-      if (dropOffDate) {
-        setSelectedDropOffDate(dropOffDate);
-        setMarkedDropOffDate({
-          [dropOffDate]: {
-            customStyles: {
-              container: {
-                backgroundColor: Colors.primaryMellow,
-                borderRadius: 5,
-              },
-              text: {
-                color: Colors.turquoiseSecondary,
-                fontWeight: '700',
-              },
-            },
-          },
-        });
-      }
-
-      // console.log('pickUpTime', pickUpTime);
-      // value previously stored
-    } catch (e) {
-      // error reading value
-    }
-    return () => {};
-  }, []);
 
   // Route Parameters
   const [routes] = React.useState([
@@ -188,7 +160,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
   ]);
   // Route Parameters End
 
-  const displayTimeSliderComponent = item => {
+  const displayTimeSliderComponent = (item: any) => {
     let validateTime = item && item.replace(' ', '');
     return (
       <View>
@@ -201,17 +173,11 @@ function TripDateTimeSelectorScreen({navigation, route}) {
   };
 
   const saveTripDates = async () => {
-    try {
-      await AsyncStorage.setItem('pickUpTime', pickUpTime.toString());
-      await AsyncStorage.setItem('pickUpDate', selectedPickupDate);
-      await AsyncStorage.setItem('dropOffTime', dropOffTime.toString());
-      await AsyncStorage.setItem('DropOffDate', selectedDropOffDate);
-      navigation.goBack();
-    } catch (e) {
-      Alert.alert('Please Select Date');
-      console.log('Error In Saving ');
-      // saving error
-    }
+    dispatch(changePickUpTime(pickUpTime.toString()));
+    dispatch(changePickUpDate(selectedPickupDate));
+    dispatch(changeDropOffTime(dropOffTime.toString()));
+    dispatch(changeDropOffDate(selectedDropOffDate));
+    navigation.goBack();
   };
 
   const pickUpCalander = () => {
@@ -231,7 +197,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
               : defaultSeletedDate
           }
           // setSelectedDropOffDate
-          minDate={index === 0 ? '' : selectedPickupDate}
+          minDate={index === 0 ? defaultSeletedDate : selectedPickupDate}
           markedDates={
             index === 0
               ? JSON.parse(JSON.stringify(markedPickupDate))
@@ -374,7 +340,7 @@ function TripDateTimeSelectorScreen({navigation, route}) {
               index === 0 ? changeTab(1) : saveTripDates();
             }}
             style={styles.customButton}>
-            <Text style={styles.buttonText}>{`Save & Continue`}</Text>
+            <Text style={styles.buttonText}>{'Save & Continue'}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -391,9 +357,8 @@ function TripDateTimeSelectorScreen({navigation, route}) {
           {...props}
           indicatorStyle={styles.tabIndicatorStyle}
           style={styles.tabStyle}
+          // eslint-disable-next-line no-shadow
           renderLabel={({route}) => {
-            // focused, color
-            // console.log(route);
             return (
               <View>
                 <Text style={styles.tabTitle}>
