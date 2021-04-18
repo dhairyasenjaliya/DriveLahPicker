@@ -5,9 +5,7 @@ import {
   DROP_OFF_TIME,
 } from '../actionType/type';
 
-const initialData = {
-  // pickupDate: 'gamndu',
-};
+const initialData = {};
 
 export default function dateTimeReducer(state = initialData, action: any) {
   switch (action.type) {

@@ -6,10 +6,13 @@
 
 === For Android ===
 
-1. To Run In Simulator/Device (Debug Build) 
+1. To Run Direct Latest Build (Release Build)
+- cd LatestApk && adb install DriveLah(18-04-21).apk
+
+2. To Run In Simulator/Device (Debug Build) 
 - react-native run-android
 
-2. Release build install in device = 
+3. Release build install in device = 
 - cd android/app/build/outputs/apk/release && adb install app-release.apk 
 
 === For iOS ===
