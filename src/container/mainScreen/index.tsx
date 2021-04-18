@@ -1,12 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import CustomHeader from '../../components/headerComponent';
-import moment from 'moment';
 
+// Third Party Packages Declare
 import {useSelector, RootStateOrAny} from 'react-redux';
+import moment from 'moment';
+// End Third Party Packages Declare
 
+// Custom Packages Declare
+import CustomHeader from '../../components/headerComponent';
 import {CustomHour} from '../../constants/utilsConst';
 import styles from './styles';
+// End Custom Packages Declare
 
 function MainScreen({navigation}: any) {
   const pickUpTime = useSelector((state: RootStateOrAny) => {
@@ -18,10 +22,6 @@ function MainScreen({navigation}: any) {
   });
 
   const selectedPickupDate = useSelector((state: RootStateOrAny) => {
-    console.log(
-      'state.dateTimeReducer.pickupDate;',
-      state.dateTimeReducer.pickupDate,
-    );
     return state.dateTimeReducer.pickupDate;
   });
 
@@ -29,43 +29,11 @@ function MainScreen({navigation}: any) {
     return state.dateTimeReducer.dropOffDate;
   });
 
-  // const [pickUpTime, setpickUpTime] = useState<String | any>(0);
-  // const [dropOffTime, setDropOffTime] = useState<String | any>(0);
-  // const [selectedPickupDate, setSelectedPickupDate] = useState<String | any>(
-  //   '',
-  // );
-  // const [selectedDropOffDate, setSelectedDropOffDate] = useState<String | any>(
-  //   '',
-  // );
-
-  // useSelector((state: RootStateOrAny) => {
-  //   console.log('useSelector', state);
-  //   // pickUpTime = state.dateTimeReducer.pickupDate;
-  //   // if (state.dateTimeReducer.pickupDate) {
-  //   //   setSelectedPickupDate(state.dateTimeReducer.pickupDate);
-  //   // }
-  //   // if (state.dateTimeReducer.pickupTime) {
-  //   //   setpickUpTime(state.dateTimeReducer.pickupTime);
-  //   // }
-  //   // if (state.dateTimeReducer.dropOffTime) {
-  //   //   setDropOffTime(state.dateTimeReducer.dropOffTime);
-  //   // }
-  //   // if (state.dateTimeReducer.dropOffDate) {
-  //   //   setSelectedDropOffDate(state.dateTimeReducer.dropOffDate);
-  //   // }
-  // });
-
-  // useEffect(async () => {
-  //   console.log('pickUpTime', pickUpTime);
-  //   return () => {};
-  // }, []);
   const fetchDateTime = (selectedDate: any, selectedTime: any) => {
     let validateDate = selectedDate
       ? moment(selectedDate).format('DD MMM')
       : '';
-    let validateTime = selectedTime
-      ? CustomHour[selectedTime].replace(' ', ':00 ')
-      : '';
+    let validateTime = selectedTime ? CustomHour[selectedTime] : '';
     let displayDateTime =
       validateDate && validateTime ? validateDate + ', ' + validateTime : '';
     return displayDateTime;

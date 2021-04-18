@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
-import {scale, verticalScale} from 'react-native-size-matters';
+import {scale} from 'react-native-size-matters';
 import {Colors, Fonts} from '../../constants/globalStyles';
 export default StyleSheet.create({
   container: {
@@ -85,7 +85,8 @@ export default StyleSheet.create({
     zIndex: 20,
   },
   horizontalPicker: {
-    paddingHorizontal: scale(150),
+    paddingLeft: scale(160),
+    paddingRight: scale(160),
   },
   horizontalPickerStyle: {
     borderTopWidth: 1.5,
@@ -128,7 +129,7 @@ export default StyleSheet.create({
     marginTop: scale(20),
   },
   timeComponentMain: {
-    width: scale(50),
+    width: scale(30),
     alignItems: 'center',
   },
   timeSecondaryComp: {
@@ -138,11 +139,18 @@ export default StyleSheet.create({
     borderColor: Colors.turquoiseSecondary,
     zIndex: 100,
   },
+  secondComp: {
+    height: scale(10),
+    borderLeftWidth: 1.5,
+    alignSelf: 'center',
+    borderColor: Colors.turquoiseSecondary,
+    zIndex: 100,
+  },
   hourText: {
     color: Colors.turquoiseSecondary,
     marginTop: scale(5),
     fontFamily: Fonts.MuseoSansRounded3,
-    fontSize: 12,
+    fontSize: scale(10),
   },
   buttonText: {
     color: Colors.perlWhite,

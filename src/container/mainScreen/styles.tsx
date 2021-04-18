@@ -1,16 +1,11 @@
 import {StyleSheet} from 'react-native';
-import {scale, verticalScale} from 'react-native-size-matters';
+import {scale} from 'react-native-size-matters';
 import {Colors, Fonts} from '../../constants/globalStyles';
 export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.perlWhite,
   },
-  buttonInside: {
-    // height: verticalScale(50),
-    // borderRadius: scale(50),
-  },
-
   buttonPos: {
     height: scale(52),
     width: scale(310),

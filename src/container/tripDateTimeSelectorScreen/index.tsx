@@ -33,53 +33,60 @@ import {
 } from '../../store/dateTime/actions';
 //End Actions From Reducers
 
-// LocaleConfig.locales['fr'] = {
-//   monthNames: [
-//     'Janvier',
-//     'Février',
-//     'Mars',
-//     'Avril',
-//     'Mai',
-//     'Juin',
-//     'Juillet',
-//     'Août',
-//     'Septembre',
-//     'Octobre',
-//     'Novembre',
-//     'Décembre',
-//   ],
-//   monthNamesShort: [
-//     'Janv.',
-//     'Févr.',
-//     'Mars',
-//     'Avril',
-//     'Mai',
-//     'Juin',
-//     'Juil.',
-//     'Août',
-//     'Sept.',
-//     'Oct.',
-//     'Nov.',
-//     'Déc.',
-//   ],
-//   dayNames: [
-//     'Dimanche',
-//     'Lundi',
-//     'Mardi',
-//     'Mercredi',
-//     'Jeudi',
-//     'Vendredi',
-//     'Samedi',
-//   ],
-//   dayNamesShort: ['loda.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-//   today: "Aujourd'hui",
-// };
-// LocaleConfig.defaultLocale = 'fr';
+// Customize Calander For Week Name
+LocaleConfig.locales.en = {
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Feb.',
+    'Mar.',
+    'Apr.',
+    'May.',
+    'Jun.',
+    'Jul.',
+    'Aug',
+    'Sept.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ],
+  dayNames: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thrusday',
+    'Friday',
+    'Saturday',
+  ],
+  dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  today: 'Today',
+};
+LocaleConfig.defaultLocale = 'en';
+// End Customize Calander For Week Name
 
 function TripDateTimeSelectorScreen({navigation, route}: any) {
   // Used For Tab Size
   const layout = useWindowDimensions();
+  // End Used For Tab Size
+
+  // To Use Function From Actions(Reducer)
   const dispatch = useDispatch();
+  // End Use Function From Actions(Reducer)
+
   // Declare All Local State Used
   const [index, changeTab] = React.useState(route.params.index);
   // Time Set
@@ -96,13 +103,11 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
     dropOffTimeFromRedux ? dropOffTimeFromRedux : 21,
   );
   // Date Set
-  const [defaultSeletedDate] = useState<string | any>(
-    moment().format('YYYY-MM-DD'),
-  );
+  const [defaultSeletedDate] = useState(moment().format('YYYY-MM-DD'));
   const selectedPickupDateFromRedux = useSelector((state: RootStateOrAny) => {
     return state.dateTimeReducer.pickupDate;
   });
-  const [markedPickupDate, setMarkedPickupDate] = useState<Array<50> | any>({
+  const [markedPickupDate, setMarkedPickupDate] = useState({
     [selectedPickupDateFromRedux
       ? selectedPickupDateFromRedux
       : moment().format('YYYY-MM-DD')]: {
@@ -132,7 +137,7 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
   const [markedDropOffDate, setMarkedDropOffDate] = useState({
     [selectedDropOffDateFromRedux
       ? selectedDropOffDateFromRedux
-      : moment().add(1, 'day').format('YYYY-MM-DD')]: {
+      : moment().format('YYYY-MM-DD')]: {
       // Custom Style Object We Cant Access From Styles.tsx
       customStyles: {
         container: {
@@ -149,9 +154,18 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
   const [selectedDropOffDate, setSelectedDropOffDate] = useState(
     selectedDropOffDateFromRedux
       ? selectedDropOffDateFromRedux
-      : moment().add(1, 'day').format('YYYY-MM-DD'),
+      : moment().format('YYYY-MM-DD'),
   );
   // End of Declared Local State Used
+
+  // Bind Custom Time With Actual Selected Date
+  // useEffect(() => {
+  //   let customTime = moment();
+  //   let selectedHour = CustomHour[pickUpTimeFromRedux].slice(0, 2);
+  //   let selectedMinute = CustomHour[pickUpTime].slice(3, 5);
+  //   customTime.set({h: selectedHour, m: selectedMinute, s: 0});
+  //   console.log(customTime.toDate().toString());
+  // }, []);
 
   // Route Parameters
   const [routes] = React.useState([
@@ -160,14 +174,23 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
   ]);
   // Route Parameters End
 
-  const displayTimeSliderComponent = (item: any) => {
-    let validateTime = item && item.replace(' ', '');
+  const displayTimeSliderComponent = (item: any, indexDisp: number) => {
+    let replaceZero = item && item.replace(':00', '');
+    let validateTime =
+      replaceZero.indexOf(0) === 0 ? replaceZero.replace('0', '') : replaceZero;
+    let checkMinute = indexDisp % 2 !== 0;
     return (
       <View>
-        <View style={styles.timeComponentMain}>
-          <View style={styles.timeSecondaryComp} />
-          <Text style={styles.hourText}>{validateTime}</Text>
-        </View>
+        {checkMinute ? (
+          <View style={styles.timeComponentMain}>
+            <View style={styles.timeSecondaryComp} />
+            <Text style={styles.hourText}>{validateTime}</Text>
+          </View>
+        ) : (
+          <View style={styles.timeComponentMain}>
+            <View style={styles.secondComp} />
+          </View>
+        )}
       </View>
     );
   };
@@ -196,7 +219,6 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
               ? selectedDropOffDate
               : defaultSeletedDate
           }
-          // setSelectedDropOffDate
           minDate={index === 0 ? defaultSeletedDate : selectedPickupDate}
           markedDates={
             index === 0
@@ -259,7 +281,6 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
           enableSwipeMonths
           hideExtraDays={true}
           style={styles.calenderHeight}
-          firstDay={1}
           showWeekNumbers={false}
           monthFormat={'MMMM'}
           theme={{
@@ -273,7 +294,9 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
           }}
         />
         <View style={styles.commonHeader}>
-          <Text style={styles.commonHeaderText}>Pickup Time</Text>
+          <Text style={styles.commonHeaderText}>
+            {index === 0 ? 'Pickup Time' : 'Drop-off Time'}
+          </Text>
         </View>
         <View style={styles.dateDisp}>
           <Text style={styles.dateDispText}>
@@ -286,16 +309,17 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
           <View style={styles.timeDisp}>
             {index === 0 && pickUpTime ? (
               <Text style={styles.timeDispText}>
-                {pickUpTime
-                  ? CustomHour[pickUpTime].replace(' ', ':00 ')
-                  : CustomHour[19]}
+                {pickUpTime ? CustomHour[pickUpTime] : CustomHour[19]}
               </Text>
             ) : null}
             {index === 1 && dropOffTime ? (
               <Text style={styles.timeDispText}>
-                {dropOffTime
-                  ? CustomHour[dropOffTime].replace(' ', ':00 ')
-                  : CustomHour[19]}
+                {dropOffTime ? CustomHour[dropOffTime] : CustomHour[19]}
+                {/* {dropOffTime
+                  ? CustomHour[dropOffTime].indexOf(0) === 0
+                    ? CustomHour[dropOffTime].replace('0', '')
+                    : CustomHour[dropOffTime]
+                  : CustomHour[19]} */}
               </Text>
             ) : null}
           </View>
@@ -309,7 +333,7 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
             key={index}
             data={CustomHour}
             renderItem={displayTimeSliderComponent}
-            itemWidth={scale(50)}
+            itemWidth={scale(30)}
             snapTimeout={50}
             contentContainerStyle={styles.horizontalPicker}
             style={styles.horizontalPickerStyle}
@@ -329,7 +353,7 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
                 } else {
                   setDropOffTime(data);
                 }
-              }, 100);
+              }, 10);
             }}
           />
           <View style={styles.slideTextContain}>
@@ -365,19 +389,10 @@ function TripDateTimeSelectorScreen({navigation, route}: any) {
                   {route.title === 'Pickup'
                     ? selectedPickupDate &&
                       moment(selectedPickupDate).format('DD MMM') +
-                        `${
-                          pickUpTime
-                            ? ', ' + CustomHour[pickUpTime].replace(' ', ':00 ')
-                            : ''
-                        }`
+                        `${pickUpTime ? ', ' + CustomHour[pickUpTime] : ''}`
                     : selectedDropOffDate &&
                       moment(selectedDropOffDate).format('DD MMM') +
-                        `${
-                          dropOffTime
-                            ? ', ' +
-                              CustomHour[dropOffTime].replace(' ', ':00 ')
-                            : ''
-                        }`}
+                        `${dropOffTime ? ', ' + CustomHour[dropOffTime] : ''}`}
                 </Text>
                 <Text style={styles.tabSubTitle}>
                   {route.title === 'Pickup'
