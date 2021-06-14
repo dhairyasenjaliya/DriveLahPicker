@@ -1,4 +1,4 @@
-# DriveLah Demo Date & Time Picker 
+# Demo Date & Time Picker 
 
 === To Run Project ===
 
